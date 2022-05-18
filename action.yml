@@ -43,6 +43,7 @@ runs:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: ${{ inputs.ecr-repo }}
         TAG: ${{ github.sha }}
+      shell: bash
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$TAG .
         docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
@@ -51,6 +52,7 @@ runs:
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$TAG"
 
     - name: Download task definition
+      shell: bash
       run: |
         aws ecs describe-task-definition \
         --task-definition ${{ inputs.task-definition }}
@@ -58,6 +60,7 @@ runs:
 
     - name: Get container name
       id: container-name
+      shell: bash
       run: |
         NAME=$(aws ecs describe-task-definition \
         --task-definition ${{ inputs.task-definition }} \
