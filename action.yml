@@ -1,4 +1,4 @@
-name: 'ecs-deploy'
+name: 'ecs-cd'
 description: 'Deploy docker image to ECS'
 inputs:
   ecr-repo:
