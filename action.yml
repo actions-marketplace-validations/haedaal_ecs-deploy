@@ -65,7 +65,7 @@ runs:
         NAME=$(aws ecs describe-task-definition \
         --task-definition ${{ inputs.task-definition }} \
         --query taskDefinition.containerDefinitions[0].name --output text)
-        echo "::set-output name=container-name::$NAME"
+        echo "::set-output name=name::$NAME"
 
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
