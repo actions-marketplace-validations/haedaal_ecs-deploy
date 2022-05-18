@@ -55,7 +55,7 @@ runs:
       shell: bash
       run: |
         aws ecs describe-task-definition \
-        --task-definition ${{ inputs.task-definition }}
+        --task-definition ${{ inputs.task-definition }} \
         --query taskDefinition > task-definition.json
 
     - name: Get container name
