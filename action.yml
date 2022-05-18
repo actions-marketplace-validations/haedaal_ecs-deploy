@@ -4,11 +4,11 @@ inputs:
   ecr-repo:
     description: "ECR Repository"
     required: true
-  ecs-service:
-    description: "ECS Service"
-    required: true
   ecs-cluster:
     description: "ECS Cluster"
+    required: true
+  ecs-service:
+    description: "ECS Service"
     required: true
   task-definition:
     description: "ECS Service task definition"
@@ -22,6 +22,14 @@ inputs:
   aws-region:
     description: "AWS Region"
     required: true
+  dockerfile:
+    description: "Dockerfile"
+    required: false
+    default: "./Dockerfile"
+  build-path:
+    description: "Docker build path"
+    required: false
+    default: "."
 
 runs:
   using: "composite"
@@ -45,7 +53,7 @@ runs:
         TAG: ${{ github.sha }}
       shell: bash
       run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$TAG .
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$TAG -f ${{ inputs.dockerfile }} ${{ inputs.build-path }}
         docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
@@ -75,6 +83,7 @@ runs:
         container-name: ${{ steps.container-name.outputs.name }}
         image: ${{ steps.build-image.outputs.image }}
 
+    # https://github.com/aws-actions/amazon-ecs-deploy-task-definition/issues/176
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
